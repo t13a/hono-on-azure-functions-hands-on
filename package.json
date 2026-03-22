@@ -1,0 +1,12 @@
+{
+  "name": "hono-on-azure-functions",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w packages/api",
+    "start": "npm run start -w packages/api",
+    "test": "npm run test -w packages/client"
+  }
+}
