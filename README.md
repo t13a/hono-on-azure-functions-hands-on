@@ -15,9 +15,10 @@ packages/
 ### api package
 
 - Runs a Hono app via Azure Functions v4 (Node.js) HTTP trigger
-- Uses `@marplex/hono-azurefunc-adapter` for the adapter layer
+- Uses a custom adapter (`src/adapter.ts`) that exposes Azure Functions' `InvocationContext` via `c.env.context`
 - Validates requests with `@hono/zod-validator` + `zod`
 - Provides an in-memory Todo CRUD API
+- Logs every operation through `InvocationContext` (integrated with Application Insights)
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -59,6 +60,24 @@ With the server running, open another terminal and run:
 
 ```bash
 npm test
+```
+
+## Accessing InvocationContext
+
+The custom adapter passes Azure Functions' `InvocationContext` into Hono's env bindings, making it available as `c.env.context` in every handler:
+
+```typescript
+import { Hono } from "hono";
+import type { AzureEnv } from "../adapter.js";
+
+const app = new Hono<AzureEnv>()
+  .get("/", (c) => {
+    c.env.context.log("Listing all todos");        // structured logging
+    c.env.context.invocationId;                     // unique request ID
+    c.env.context.extraInputs;                      // input bindings (Cosmos DB, Storage, etc.)
+    c.env.context.extraOutputs;                     // output bindings
+    return c.json({ message: "Hello!" });
+  });
 ```
 
 ## Type Safety with Hono RPC
