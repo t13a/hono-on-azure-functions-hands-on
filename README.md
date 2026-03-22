@@ -109,3 +109,7 @@ const todo = await res.json(); // { id: string, title: string, completed: boolea
 ```
 
 TypeScript Project References (`references` in `tsconfig.json`) enable IDE type completions without building first.
+
+## Acknowledgements
+
+The custom adapter in this project is based on [@marplex/hono-azurefunc-adapter](https://github.com/marplex/hono-azurefunc-adapter) by Marco, which provided the foundation for bridging Azure Functions and Hono. This project extends it to expose `InvocationContext` to Hono handlers.
